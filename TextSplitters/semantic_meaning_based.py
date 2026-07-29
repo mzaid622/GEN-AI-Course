@@ -1,12 +1,11 @@
 from langchain_experimental.text_splitter import SemanticChunker
-from langchain_openai.embeddings import OpenAIEmbeddings
-from dotenv import load_dotenv
+from langchain_ollama import OllamaEmbeddings
 
-load_dotenv()
-
+ollama_embeddings = OllamaEmbeddings(model="nomic-embed-text")
 text_splitter = SemanticChunker(
-    OpenAIEmbeddings(), breakpoint_threshold_type="standard_deviation",
-    breakpoint_threshold_amount=3
+    ollama_embeddings,
+    breakpoint_threshold_type="standard_deviation",
+    breakpoint_threshold_amount=1,
 )
 
 sample = """
@@ -18,4 +17,6 @@ Terrorism is a big danger to peace and safety. It causes harm to people and crea
 
 docs = text_splitter.create_documents([sample])
 print(len(docs))
-print(docs)
+for doc in docs:
+    print("----CHUNK----")
+    print(doc.page_content)
